@@ -1,0 +1,35 @@
+{
+  "name": "ring-ai-assist",
+  "version": "1.0.0",
+  "description": "Watches Ring camera video, detects people who need help, and talks to them through the camera speaker.",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "auth": "ring-auth-cli",
+    "list-cameras": "tsx src/scripts/listCameras.ts",
+    "say": "tsx src/scripts/say.ts",
+    "test-voice": "tsx src/scripts/testVoice.ts",
+    "test-detect": "tsx src/scripts/testDetect.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0",
+    "@elevenlabs/elevenlabs-js": "^2.70.0",
+    "dotenv": "^18.0.5",
+    "ring-client-api": "^14.3.0",
+    "werift": "^0.22.4",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  },
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  }
+}

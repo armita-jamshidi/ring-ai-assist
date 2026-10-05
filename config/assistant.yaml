@@ -1,0 +1,90 @@
+# ---------------------------------------------------------------------------
+# Ring AI Assist configuration
+#
+# To teach the assistant a new situation, add an entry under `scenarios`.
+# To change how it sounds, edit or add an entry under `tones`, then point a
+# scenario's `tone` at it. Restart the app after editing.
+# ---------------------------------------------------------------------------
+
+# Which Ring cameras to watch (names exactly as shown in the Ring app).
+# Leave empty to watch every camera on the account.
+cameras: []
+
+watch:
+  # A live session starts on motion (or a doorbell press) and stays open this long,
+  # extended each time new motion arrives. Ring caps live calls at ~10 minutes.
+  session_seconds: 90
+  # Frames pulled from the live stream per second.
+  frames_per_second: 1
+  # How often frames are sent to Claude for analysis.
+  analysis_interval_seconds: 3
+  # How many of the most recent frames go into each analysis (gives Claude motion context).
+  frames_per_analysis: 4
+  # Downscale frames to this width before analysis (smaller = faster + cheaper).
+  frame_width: 960
+
+# How the assistant sounds. `voice_id` is an ElevenLabs voice ID
+# (find them at https://elevenlabs.io/app/voice-library).
+# `style_tag` is an ElevenLabs v3 audio tag put in front of the line, e.g.
+# [gently], [cheerfully], [firmly], [whispers]. Leave it empty for no tag.
+tones:
+  calm_helpful:
+    voice_id: 21m00Tcm4TlvDq8ikWAM
+    model_id: eleven_v3
+    style_tag: "[gently]"
+    settings:
+      stability: 0.5
+      similarity_boost: 0.75
+      style: 0.3
+      speed: 0.95
+
+  friendly_upbeat:
+    voice_id: 21m00Tcm4TlvDq8ikWAM
+    model_id: eleven_v3
+    style_tag: "[cheerfully]"
+    settings:
+      stability: 0.4
+      similarity_boost: 0.75
+      style: 0.6
+      speed: 1.0
+
+  firm_clear:
+    voice_id: 21m00Tcm4TlvDq8ikWAM
+    model_id: eleven_v3
+    style_tag: "[firmly]"
+    settings:
+      stability: 0.7
+      similarity_boost: 0.8
+      style: 0.2
+      speed: 0.9
+
+# Situations the assistant looks for. `description` is what Claude is told to
+# look for, so describe what it looks like on camera.
+scenarios:
+  - id: card_swipe_trouble
+    enabled: true
+    description: >
+      A person is at a card reader, payment terminal, or access-control pad and is
+      struggling to get it to accept their card: repeated swipe, tap, or insert
+      attempts, holding the card the wrong way or in the wrong spot, looking
+      confused at the reader, or trying again after it didn't work.
+    response: "You have to swipe your card."
+    tone: calm_helpful
+    # 0-1. How sure Claude has to be before this counts as a hit.
+    min_confidence: 0.75
+    # Hits needed in a row before speaking (cuts false alarms).
+    consecutive_hits: 2
+    # Minimum seconds between saying this again on the same camera.
+    cooldown_seconds: 60
+
+  # Example of a second situation, disabled. Set enabled: true to turn it on.
+  - id: package_struggle
+    enabled: false
+    description: >
+      A delivery person is looking around for where to leave a package, or is
+      trying and failing to fit a package somewhere.
+    response: "You can leave the package right by the door. Thank you!"
+    tone: friendly_upbeat
+    min_confidence: 0.8
+    consecutive_hits: 2
+    cooldown_seconds: 300
